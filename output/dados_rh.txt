@@ -1,0 +1,39 @@
+Daniel Lundgren,1,12000.00,Engenheiro de Software,Rua Sao Mateus,580,Portao,Curitiba,PR
+Juliana Oliveira,2,10500.00,Analista de Marketing,Av. das Flores,123,Jardim Botanico,Curitiba,PR
+Ricardo Santos,3,9000.00,Desenvolvedor Front-end,Rua das Palmeiras,789,Centro,Colombo,PR
+Fernanda Lima,4,11000.00,Gerente de Projetos,Av. dos Pinheiros,456,Pinheirinho,Curitiba,PR
+Marcos Oliveira,5,9500.00,Analista Financeiro,Rua das Azaleias,234,Xaxim,Curitiba,PR
+Camila Silva,6,8500.00,Designer Grafico,Rua das Orquideas,567,Cajuru,Curitiba,PR
+Pedro Almeida,7,10000.00,Engenheiro de Redes,Av. das Araucarias,876,Guabirotuba,Curitiba,PR
+Luiza Pereira,8,9200.00,Analista de RH,Rua dos Cravos,321,Bacacheri,Curitiba,PR
+Rodrigo Oliveira,9,9800.00,Analista de Sistemas,Av. do Cerejeira,765,Cidade Industrial,Curitiba,PR
+Amanda Costa,10,8800.00,Suporte Tecnico,Rua das Tulipas,432,Tingui,Curitiba,PR
+Laura Martins,11,8700.00,Analista de Comunicacao,Av. das Bromelias,987,Abranches,Curitiba,PR
+Mauricio Santos,12,9200.00,Desenvolvedor Full-stack,Rua dos Girassois,654,Boqueirao,Curitiba,PR
+Cristina Souza,13,9400.00,Analista de Qualidade,Av. dos Lirios,543,Sitio Cercado,Curitiba,PR
+Lucas Fernandes,14,10200.00,Arquiteto de Software,Rua das Hortensias,876,Cabral,Curitiba,PR
+Tatiane Oliveira,15,8900.00,Analista de Recursos Humanos,Rua dos Anturios,234,Novo Mundo,Curitiba,PR
+Gustavo Pereira,16,9700.00,Desenvolvedor Mobile,Av. dos Jasmins,765,Alto da XV,Curitiba,PR
+Carla Lima,17,9300.00,Analista de Marketing Digital,Rua dos Manacas,321,Campo Comprido,Curitiba,PR
+Andre Silva,18,8800.00,Suporte Tecnico,Av. das Tulipas,432,Santa Felicidade,Curitiba,PR
+Leticia Santos,19,9600.00,Engenheiro Eletricista,Rua das Begonias,543,Batel,Curitiba,PR
+Felipe Costa,20,8500.00,Analista de Sistemas Jr,Av. dos Geranios,876,Agua Verde,Curitiba,PR
+Aline Oliveira,21,9100.00,Designer de UI/UX,Rua dos Crisantemos,234,Boa Vista,Curitiba,PR
+Rafael Almeida,22,9800.00,Gerente de Projetos de TI,Av. das Azaleias,765,Bigorrilho,Curitiba,PR
+Marina Lima,23,8900.00,Analista de Comunicacao Interna,Rua dos Narcisos,321,Sao Francisco,Curitiba,PR
+Joao Santos,24,9200.00,Analista de Suporte,Av. das Acacias,432,Juveve,Curitiba,PR
+Larissa Costa,25,8500.00,Desenvolvedor Front-end Jr,Rua dos Eucaliptos,543,Boa Vista,Curitiba,PR
+Alexandre Oliveira,26,9400.00,Analista Financeiro,Av. dos Pinheiros,876,Fazenda Velha,Araucaria,PR
+Juliana Oliveira,27,10500.00,Analista de Marketing,Avenida das Ideias,123,Jardim Botanico,Curitiba,PR
+Ricardo Santos,28,9000.00,Desenvolvedor Front-end,Rua dos Algoritmos,789,Centro,Colombo,PR
+Fernanda Lima,29,11000.00,Gerente de Projetos,Avenida da Solucao,456,Pinheirinho,Curitiba,PR
+Marcos Oliveira,30,9500.00,Analista Financeiro,Rua das Estrategias,234,Xaxim,Curitiba,PR
+Camila Silva,31,8500.00,Designer Grafico,Rua da Criatividade,567,Cajuru,Curitiba,PR
+Pedro Almeida,32,10000.00,Engenheiro de Redes,Avenida da Conectividade,876,Guabirotuba,Curitiba,PR
+Luiza Pereira,33,9200.00,Analista de RH,Rua da Eficiencia,321,Bacacheri,Curitiba,PR
+Rodrigo Oliveira,34,9800.00,Analista de Sistemas,Avenida da Tecnologia,765,Cidade Industrial,Curitiba,PR
+Amanda Costa,35,8800.00,Suporte Tecnico,Rua da Inovacao,432,Tingui,Curitiba,PR
+Laura Martins,36,8700.00,Analista de Comunicacao,Avenida da Criatividade,987,Abranches,Curitiba,PR
+Mauricio Santos,37,9200.00,Desenvolvedor Full-stack,Rua da Programacao,654,Boqueirao,Curitiba,PR
+Anderson Silva,39,5000.00,Analista Jr,Rua Jose Ferreira,455,Sitio Cercado,Curitiba,PR
+Jose Silva,40,3000.00,Tecnico da Manutencao,Rua das Oncas,688,Tiete,Araucaria,PR

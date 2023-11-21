@@ -38,6 +38,8 @@ typedef struct Employee {
 /*************************************************************
  * Prototypes
  ************************************************************/
+int getEmployeesQty(FILE *file);
+void getEmployeesData(FILE *file, tEmp *employees, int nrEmp);
 int addEmployee(tEmp **employees, int nrEmp);
 void editPersonalData(tEmp *employee);
 void addPersonalData(tEmp *employee);
@@ -53,9 +55,9 @@ void showMenu();
  ************************************************************/
 int getEmployeesQty(FILE *file)
 {
-    int nrEmp = 0;
+    int nrEmp = 0, d;
 
-    for (char d = getc(file); d != EOF; d = getc(file)) 
+    while((d = fgetc(file)) != EOF)
     { // Counts how many lines the .txt has (Number of lines = Number of employees)
         if (d == '\n') // Increment count if this character is newline
         {
@@ -66,11 +68,12 @@ int getEmployeesQty(FILE *file)
     return nrEmp;
 }
 
-void getEmployeesData(FILE *file, tEmp *employees)
+void getEmployeesData(FILE *file, tEmp *employees, int nrEmp)
 {
     int employeeDataField = 0;
     int strIdx = 0;
     int empIdx = 0;
+    int c;
     char strBuffer[50];
 
     for(int idx = 0; idx < 50; idx++)
@@ -81,7 +84,7 @@ void getEmployeesData(FILE *file, tEmp *employees)
     tEmp *currentEmployee = employees;
     rewind(file);
 
-    for(char c = getc(file); c != EOF; c = getc(file))
+    while((c = fgetc(file)) != EOF)
     {
         if((c != ',') && (c != '\n') && (c != '\r'))
         {
@@ -144,8 +147,8 @@ void getEmployeesData(FILE *file, tEmp *employees)
                     strncpy(currentEmployee->address.addrState,strBuffer,sizeof(strBuffer));
                     printf("Emp %d address.addrState||%s||\n",empIdx,currentEmployee->address.addrState);
                     employeeDataField = 0;
-                    currentEmployee++;
                     empIdx++;
+                    currentEmployee++; // avoid memory overflow
                     break;
             }
             for(int idx = 0; idx < 50; idx++)
@@ -169,7 +172,7 @@ int addEmployee(tEmp **employees, int nrEmp)
     
     if(nrEmp > 0)
     {
-        *employees = (tEmp *)realloc(*employees, nrEmp * sizeof(tEmp));
+        *employees = (tEmp *)realloc(*employees, (nrEmp + 1) * sizeof(tEmp));
     }
     else
     {
@@ -247,11 +250,11 @@ void addAddressData(tEmp *employee)
 void logEmployeeData(tEmp *employee, FILE *file)
 {
     printf("%s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", employee->name, employee->employeeID, employee->salary,
-                                                    employee->role, employee->address.strName, employee->address.addrNr,
-                                                    employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
+                                                        employee->role, employee->address.strName, employee->address.addrNr,
+                                                        employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
     fprintf(file, "%s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", employee->name, employee->employeeID, employee->salary,
-                                                    employee->role, employee->address.strName, employee->address.addrNr,
-                                                    employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
+                                                        employee->role, employee->address.strName, employee->address.addrNr,
+                                                        employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
 }
 
 void displayEmployees(FILE *file) {
@@ -308,7 +311,7 @@ void editEmployee(tEmp *employee)
         {
             editPersonalData(employee);
         }
-        else if((userChoice != 'n') || (userChoice != 'N'))
+        else if((userChoice != 'n') && (userChoice != 'N'))
         {
             printf("Opcao Invalida! Tente novamente.\n\n");
         }
@@ -318,20 +321,85 @@ void editEmployee(tEmp *employee)
 
     do
     {
-        printf("Deseja editar o endereco? (s/n)");
+        printf("Deseja editar o endereco? (s/n): ");
         scanf(" %c",&userChoice);
 
         if((userChoice == 's') || (userChoice == 'S'))
         {
             addAddressData(employee);
         }
-        else if((userChoice != 'n') || (userChoice != 'N'))
+        else if((userChoice != 'n') && (userChoice != 'N'))
         {
             printf("Opcao Invalida! Tente novamente.\n\n");
         }
 
     } while (userChoice != 's' && userChoice != 'S' &&
              userChoice != 'n' && userChoice != 'N');
+}
+
+int removeEmployee(tEmp *employees, int nrEmployees) 
+{
+    int empId;
+    char userChoice;
+    bool isEmployeeFound = false, proceedRemoval = false;
+
+    printf("Insira o ID do funcionario a ser removido: ");
+    scanf("%d", &empId);
+
+    int foundIndex = -1;
+
+    for (int cntr = 0; cntr < nrEmployees; cntr++) 
+    {
+        if (employees[cntr].employeeID == empId) 
+        {
+            printf("Usuario selecionado: %s, %s\n",employees[cntr].name, employees[cntr].role);
+            isEmployeeFound = true;
+            foundIndex = cntr;
+            break; // Não é necessário continuar procurando se já encontrou
+        }
+    }
+
+    if (isEmployeeFound) 
+    {
+        do
+        {
+            printf("Deseja mesmo prosseguir com a remocao? (s/n): ");
+            scanf(" %c",&userChoice);
+
+            if((userChoice == 's') || (userChoice == 'S'))
+            {
+                proceedRemoval = true;
+            }
+            else if((userChoice != 'n') && (userChoice != 'N'))
+            {
+                printf("Opcao Invalida! Tente novamente.\n\n");
+            }
+
+        } while (userChoice != 's' && userChoice != 'S' &&
+                userChoice != 'n' && userChoice != 'N');
+        
+        if(proceedRemoval)
+        {
+            // Mover os funcionários para trás a partir da posição encontrada
+            for (int i = foundIndex; i < nrEmployees - 1; i++) {
+                employees[i] = employees[i + 1];
+            }
+
+            // Limpar a última posição
+            memset(&employees[nrEmployees - 1], 0, sizeof(tEmp));
+
+            // Reduzir o número total de funcionários
+            nrEmployees--;
+
+            printf("Funcionario removido com sucesso!\n");
+        }
+    } 
+    else 
+    {
+        printf("O ID indicado nao existe!\n");
+    }
+
+    return nrEmployees;
 }
 
 void writeData(tEmp *employees, FILE *file, int nrEmp)
@@ -344,16 +412,17 @@ void writeData(tEmp *employees, FILE *file, int nrEmp)
 }
 
 void showMenu(int nrEmp) {
-    printf("\n");
+    printf("\n\n");
     printf(" Nr de funcionarios atual: %d\n",nrEmp);
     printf(" ____________________________\n");
     printf("|           Menu             |\n");
     printf("|____________________________|\n");
     printf("| 1. Adicionar Funcionario   |\n");
-    printf("| 2. Ver Cadastros           |\n");
+    printf("| 2. Listar cadastros        |\n");
     printf("| 3. Editar Cadastro         |\n");
-    printf("| 4. Reajuste coletivo       |\n");
-    printf("| 5. Sair                    |\n");
+    printf("| 4. Remover Cadastro        |\n");
+    printf("| 5. Reajuste coletivo       |\n");
+    printf("| 6. Sair                    |\n");
     printf("|____________________________|\n");
     printf("Escolha uma opcao: ");
 }
@@ -366,7 +435,7 @@ int main() {
     tEmp *employeesDB = NULL;
     int choice, nrOfEmployees = 0;
 
-    file = fopen("dados_rh.txt", "r+");
+    file = fopen("dados_rh.txt", "r");
 
     if (file == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -378,8 +447,17 @@ int main() {
 
         if(nrOfEmployees > 0)
         {
-            employeesDB = (tEmp*)malloc(nrOfEmployees * sizeof(tEmp));
-            getEmployeesData(file,employeesDB);
+            do
+            {
+                employeesDB = (tEmp*)malloc((nrOfEmployees + 1) * sizeof(tEmp));
+                if (employeesDB == NULL) 
+                {
+                    // Malloc fault
+                    fprintf(stderr, "Erro na realocacao de memoria.\n");
+                }
+            } while (employeesDB == NULL);
+            
+            getEmployeesData(file,employeesDB,nrOfEmployees);
         }
         fclose(file);
     }
@@ -399,20 +477,23 @@ int main() {
                 findEmployee(employeesDB, nrOfEmployees);
                 break;
             case 4:
-                
+                nrOfEmployees = removeEmployee(employeesDB, nrOfEmployees);
                 break;
-            case 5:
-                file = fopen("dados_rh.txt", "w");
-                writeData(employeesDB, file, nrOfEmployees);
+            case 6:
+                if(employeesDB != NULL)
+                {
+                    file = fopen("dados_rh.txt", "w");
+                    writeData(employeesDB, file, nrOfEmployees);
+                    fclose(file);
+                }
                 printf("Programa encerrado.\n");
-                fclose(file);
                 free(employeesDB);
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
                 break;
         }
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
