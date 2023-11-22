@@ -45,7 +45,7 @@ void editPersonalData(tEmp *employee);
 void addPersonalData(tEmp *employee);
 void addAddressData(tEmp *employee);
 void logEmployeeData(tEmp *employee, FILE *file);
-void displayEmployees(FILE *file);
+void displayEmployees(tEmp *employees, int nrEmp);
 void editEmployee(tEmp *employee);
 void writeData(tEmp *employees, FILE *file, int nrEmp);
 void showMenu();
@@ -257,16 +257,87 @@ void logEmployeeData(tEmp *employee, FILE *file)
                                                         employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
 }
 
-void displayEmployees(FILE *file) {
-/*     struct Employee currentEmployee;
+void displayEmployees(tEmp *employees, int nrEmp) 
+{
+    int userChoice = -1;
+    int i, j;
 
-    printf("\nLista de Funcionarios:\n");
+    tEmp bufEmployee;
 
-    rewind(file); // Coloca o cursor no início do arquivo
+    do
+    {
+        printf("\nSelecione qual o modo de listagem desejado: \n\n");
+        printf("1 - Listar por ID \n");
+        printf("2 - Listar por salario \n");
+        printf("3 - Listar por ordem alfabetica \n\n");
+        printf("Modo: ");
+        scanf("%d",&userChoice);
 
-    while (fscanf(file, " %49s %d %f", currentEmployee.name, &currentEmployee.employeeID, &currentEmployee.salary) == 3) {
-        printf("Nome: %s\nID: %d\nSalario: %.2f\n\n", currentEmployee.name, currentEmployee.employeeID, currentEmployee.salary);
-    } */
+        if((userChoice != 1) && (userChoice != 2) && (userChoice != 3))
+        {
+            printf("Opcao invalida! Tente novamente! \n\n");
+        }
+    } while ((userChoice != 1) && (userChoice != 2) && (userChoice != 3));
+
+    switch(userChoice)
+    {
+        case 1:
+            for(i = nrEmp - 1; i > 0; i--)
+            {
+                for(j = 0; j < i; j++)
+                {
+                    if(employees[j].employeeID > employees[j+1].employeeID)
+                    {
+                        bufEmployee = employees[j];
+                        employees[j] = employees[j+1];
+                        employees[j+1] = bufEmployee;
+
+                    }
+                }
+            }
+            break;
+
+        case 2:
+            for(i = nrEmp - 1; i > 0; i--)
+            {
+                for(j = 0; j < i; j++)
+                {
+                    if(employees[j].salary > employees[j+1].salary)
+                    {
+                        bufEmployee = employees[j];
+                        employees[j] = employees[j+1];
+                        employees[j+1] = bufEmployee;
+
+                    }
+                }
+            }
+            break;
+
+        case 3:
+            for(i = nrEmp - 1; i > 0; i--)
+            {
+                for(j = 0; j < i; j++)
+                {
+                    if(employees[j].name[0] > employees[j+1].name[0])
+                    {
+                        bufEmployee = employees[j];
+                        employees[j] = employees[j+1];
+                        employees[j+1] = bufEmployee;
+
+                    }
+                }
+            }
+            break;
+    }
+
+    printf("\n---------- Listagem: ----------\n");
+
+    for(int empCntr = 0; empCntr < nrEmp; empCntr++)
+    {
+        printf("%d - %s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", empCntr + 1, employees[empCntr].name, employees[empCntr].employeeID, employees[empCntr].salary,
+                                                      employees[empCntr].role, employees[empCntr].address.strName, employees[empCntr].address.addrNr,
+                                                      employees[empCntr].address.addrRegion, employees[empCntr].address.addrCity, employees[empCntr].address.addrState);
+    }
 }
 
 void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through its ID
@@ -471,7 +542,7 @@ int main() {
                 nrOfEmployees = addEmployee(&employeesDB,nrOfEmployees);
                 break;
             case 2:
-                displayEmployees(file);
+                displayEmployees(employeesDB,nrOfEmployees);
                 break;
             case 3:
                 findEmployee(employeesDB, nrOfEmployees);
