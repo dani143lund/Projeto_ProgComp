@@ -47,6 +47,7 @@ void addAddressData(tEmp *employee);
 void logEmployeeData(tEmp *employee, FILE *file);
 void displayEmployees(tEmp *employees, int nrEmp);
 void editEmployee(tEmp *employee);
+void showEmployee(tEmp *employee, int nrEmployees);
 void writeData(tEmp *employees, FILE *file, int nrEmp);
 void showMenu();
 
@@ -165,7 +166,7 @@ int addEmployee(tEmp **employees, int nrEmp)
     int quantity;
     int currentSize = nrEmp;
 
-    printf("Digite a quantidade de funcionarios a cadastrar: ");
+    printf("\nDigite a quantidade de funcionarios a cadastrar: ");
     scanf("%d", &quantity);
 
     nrEmp += quantity;
@@ -194,7 +195,8 @@ int addEmployee(tEmp **employees, int nrEmp)
             addAddressData(&(*employees)[i]);
         }
 
-        printf("%d funcionario(s) adicionado(s) com sucesso!\n", quantity);
+        printf("%d funcionario(s) adicionado(s) com sucesso!\n\n", quantity);
+        system("pause");
         return nrEmp;
     }
 }
@@ -338,6 +340,9 @@ void displayEmployees(tEmp *employees, int nrEmp)
                                                       employees[empCntr].role, employees[empCntr].address.strName, employees[empCntr].address.addrNr,
                                                       employees[empCntr].address.addrRegion, employees[empCntr].address.addrCity, employees[empCntr].address.addrState);
     }
+
+    printf("\n");
+    system("pause");
 }
 
 void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through its ID
@@ -346,7 +351,7 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
     int empId;
     bool isEmployeeFound = false;
 
-    printf("Insira o ID do funcionario a ser editado: ");
+    printf("\nInsira o ID do funcionario a ser editado: ");
     scanf("%d",&empId);
 
     tEmp *currentEmployee = employee;
@@ -363,8 +368,13 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
 
     if(!isEmployeeFound)
     {
-        printf("O ID indicado nao existe!\n");
+        printf("O ID indicado nao existe!\n\n");
     }
+    else
+    {
+        printf("Funcionario editado com sucesso!\n\n");
+    }
+    system("pause");
 }
 
 void editEmployee(tEmp *employee)
@@ -414,7 +424,7 @@ int removeEmployee(tEmp *employees, int nrEmployees)
     char userChoice;
     bool isEmployeeFound = false, proceedRemoval = false;
 
-    printf("Insira o ID do funcionario a ser removido: ");
+    printf("\nInsira o ID do funcionario a ser removido: ");
     scanf("%d", &empId);
 
     int foundIndex = -1;
@@ -462,15 +472,79 @@ int removeEmployee(tEmp *employees, int nrEmployees)
             // Reduzir o número total de funcionários
             nrEmployees--;
 
-            printf("Funcionario removido com sucesso!\n");
+            printf("Funcionario removido com sucesso!\n\n");
         }
     } 
     else 
     {
-        printf("O ID indicado nao existe!\n");
+        printf("O ID indicado nao existe!\n\n");
     }
 
+    system("pause");
     return nrEmployees;
+}
+
+void showEmployee(tEmp *employee, int nrEmployees) // Shows employee details through its ID
+{
+    int empId;
+    bool isEmployeeFound = false;
+
+    printf("\nInsira o ID do funcionario a ser consultado: ");
+    scanf("%d",&empId);
+
+    tEmp *currentEmployee = employee;
+
+    for(int cntr = 0; cntr < nrEmployees; cntr++) // Sweep through the employees data
+    {
+        if(currentEmployee->employeeID == empId) // Employee found
+        {
+            isEmployeeFound = true;
+            printf("\nDados do funcionario ID %d: ",empId);
+            printf("\nNome: %s",currentEmployee->name);
+            printf("\nSalario: %.2f",currentEmployee->salary);
+            printf("\nCargo: %s",currentEmployee->role);
+            printf("\nEndereco: %s, %d, %s, %s, %s.\n\n",currentEmployee->address.strName, currentEmployee->address.addrNr,
+                                                    currentEmployee->address.addrRegion, currentEmployee->address.addrCity, currentEmployee->address.addrState);
+            break;
+        }
+        currentEmployee++;
+    }
+
+    if(!isEmployeeFound)
+    {
+        printf("O ID indicado nao existe!\n\n");
+    }
+
+    system("pause");
+}
+
+void salaryAdj(tEmp* employee, int nrEmployees)
+{
+    float percent;
+
+    printf("\nPlataforma de reajuste salarial anual:");
+    do
+    {
+        printf("\nDigite o percentual de reajuste salarial (Max 20 %c): ",'%');
+        scanf("%f",&percent);
+
+        if(percent < 0)
+        {
+            printf("Nao e possivel atribuir um reajuste negativo!\n");
+        }
+        else if(percent > 20)
+        {
+            printf("O reajuste inserido e maior do que o permitido!\n");
+        }
+    } while ((percent < 0) || (percent > 20));
+
+    for(int cntr = 0; cntr < nrEmployees; cntr++)
+    {
+        employee[cntr].salary = employee[cntr].salary * (1.0 + (percent / 100.0));
+    }
+
+    printf("\nSalarios reajustados com sucesso!\n\n");
+    system("pause");
 }
 
 void writeData(tEmp *employees, FILE *file, int nrEmp)
@@ -492,8 +566,9 @@ void showMenu(int nrEmp) {
     printf("| 2. Listar cadastros        |\n");
     printf("| 3. Editar Cadastro         |\n");
     printf("| 4. Remover Cadastro        |\n");
-    printf("| 5. Reajuste coletivo       |\n");
-    printf("| 6. Sair                    |\n");
+    printf("| 5. Consultar funcionario   |\n");
+    printf("| 6. Reajuste coletivo       |\n");
+    printf("| 7. Sair                    |\n");
     printf("|____________________________|\n");
     printf("Escolha uma opcao: ");
 }
@@ -506,7 +581,7 @@ int main() {
     tEmp *employeesDB = NULL;
     int choice, nrOfEmployees = 0;
 
-    file = fopen("dados_rh.txt", "r");
+    file = fopen("dados_rh.txt", "r+");
 
     if (file == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -538,33 +613,49 @@ int main() {
         scanf("%d", &choice);
 
         switch (choice) {
+
             case 1:
                 nrOfEmployees = addEmployee(&employeesDB,nrOfEmployees);
                 break;
+
             case 2:
                 displayEmployees(employeesDB,nrOfEmployees);
                 break;
+
             case 3:
                 findEmployee(employeesDB, nrOfEmployees);
                 break;
+
             case 4:
                 nrOfEmployees = removeEmployee(employeesDB, nrOfEmployees);
                 break;
+
+            case 5:
+                showEmployee(employeesDB, nrOfEmployees);
+                break;
+
             case 6:
+                salaryAdj(employeesDB, nrOfEmployees);
+                break;
+
+            case 7:
                 if(employeesDB != NULL)
                 {
                     file = fopen("dados_rh.txt", "w");
                     writeData(employeesDB, file, nrOfEmployees);
                     fclose(file);
                 }
+
                 printf("Programa encerrado.\n");
                 free(employeesDB);
                 break;
+
             default:
                 printf("Opcao invalida. Tente novamente.\n");
                 break;
         }
-    } while (choice != 6);
+
+    } while (choice != 7);
 
     return 0;
 }
