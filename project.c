@@ -39,17 +39,20 @@ typedef struct Employee {
  * Prototypes
  ************************************************************/
 int getEmployeesQty(FILE *file);
-void getEmployeesData(FILE *file, tEmp *employees, int nrEmp);
+void getEmployeesData(FILE *file, tEmp *employees);
 int addEmployee(tEmp **employees, int nrEmp);
 void editPersonalData(tEmp *employee);
 void addPersonalData(tEmp *employee);
 void addAddressData(tEmp *employee);
 void logEmployeeData(tEmp *employee, FILE *file);
 void displayEmployees(tEmp *employees, int nrEmp);
+void findEmployee(tEmp *employee, int nrEmployees);
 void editEmployee(tEmp *employee);
+int removeEmployee(tEmp *employees, int nrEmployees);
 void showEmployee(tEmp *employee, int nrEmployees);
+void salaryAdj(tEmp* employee, int nrEmployees);
 void writeData(tEmp *employees, FILE *file, int nrEmp);
-void showMenu();
+void showMenu(int nrEmp);
 
 /*************************************************************
  * Function definitions
@@ -69,7 +72,7 @@ int getEmployeesQty(FILE *file)
     return nrEmp;
 }
 
-void getEmployeesData(FILE *file, tEmp *employees, int nrEmp)
+void getEmployeesData(FILE *file, tEmp *employees)
 {
     int employeeDataField = 0;
     int strIdx = 0;
@@ -188,6 +191,7 @@ int addEmployee(tEmp **employees, int nrEmp)
     } 
     else 
     {
+        system("cls");
         for (int i = currentSize; i < currentSize + quantity; i++) 
         {
             printf("%d < %d\n", currentSize, currentSize + quantity);
@@ -214,16 +218,34 @@ void editPersonalData(tEmp *employee)
 
 void addPersonalData(tEmp *employee)
 {
+    int dataCheck = 0;
+
     printf("\n---------- Dados Pessoais ----------\n");
 
     printf("Nome do funcionario: ");
     scanf(" %49[^\n]", employee->name);
 
-    printf("ID do funcionario: ");
-    scanf("%d", &employee->employeeID);
-
-    printf("Salario do funcionario: ");
-    scanf("%f", &employee->salary);
+    do
+    {
+        printf("ID do funcionario: ");
+        dataCheck = scanf("%d", &employee->employeeID);
+        if(dataCheck != 1)
+        {
+            printf("O formato dos dados inseridos esta incorreto!\n\n");
+            while ( getchar() != '\n' );
+        }
+    } while (dataCheck != 1);
+    
+    do
+    {
+        printf("Salario do funcionario: ");
+        dataCheck = scanf("%f", &employee->salary);
+        if(dataCheck != 1)
+        {
+            printf("O formato dos dados inseridos esta incorreto!\n\n");
+            while ( getchar() != '\n' );
+        }
+    } while (dataCheck != 1);
 
     printf("Cargo do funcionario: ");
     scanf(" %49[^\n]", employee->role);    
@@ -231,13 +253,23 @@ void addPersonalData(tEmp *employee)
 
 void addAddressData(tEmp *employee)
 {
+    int dataCheck = 0;
+
     printf("\n---------- Endereco ----------\n");
 
     printf("Rua: ");
     scanf(" %49[^\n]", employee->address.strName);
 
-    printf("Numero: ");
-    scanf("%d", &employee->address.addrNr);
+    do
+    {
+        printf("Numero: ");
+        dataCheck = scanf("%d", &employee->address.addrNr);
+        if(dataCheck != 1)
+        {
+            printf("O formato dos dados inseridos esta incorreto!\n\n");
+            while ( getchar() != '\n' );
+        }
+    } while (dataCheck != 1);
 
     printf("Bairro: ");
     scanf(" %49[^\n]", employee->address.addrRegion);
@@ -332,6 +364,7 @@ void displayEmployees(tEmp *employees, int nrEmp)
             break;
     }
 
+    system("cls");
     printf("\n---------- Listagem: ----------\n");
 
     for(int empCntr = 0; empCntr < nrEmp; empCntr++)
@@ -369,6 +402,7 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
     if(!isEmployeeFound)
     {
         printf("O ID indicado nao existe!\n\n");
+        while ( getchar() != '\n' );
     }
     else
     {
@@ -478,6 +512,7 @@ int removeEmployee(tEmp *employees, int nrEmployees)
     else 
     {
         printf("O ID indicado nao existe!\n\n");
+        while ( getchar() != '\n' );
     }
 
     system("pause");
@@ -513,6 +548,7 @@ void showEmployee(tEmp *employee, int nrEmployees) // Shows employee details thr
     if(!isEmployeeFound)
     {
         printf("O ID indicado nao existe!\n\n");
+        while ( getchar() != '\n' );
     }
 
     system("pause");
@@ -521,13 +557,23 @@ void showEmployee(tEmp *employee, int nrEmployees) // Shows employee details thr
 void salaryAdj(tEmp* employee, int nrEmployees)
 {
     float percent;
+    int dataCheck;
 
     printf("\nPlataforma de reajuste salarial anual:");
     do
     {
-        printf("\nDigite o percentual de reajuste salarial (Max 20 %c): ",'%');
-        scanf("%f",&percent);
+        do
+        {
+            printf("\nDigite o percentual de reajuste salarial (Max 20 %c): ",'%');
+            dataCheck = scanf("%f",&percent);
 
+            if(dataCheck != 1)
+            {
+                printf("O formato dos dados inseridos esta incorreto!\n");
+                while ( getchar() != '\n' );
+            }
+        } while (dataCheck != 1);
+        
         if(percent < 0)
         {
             printf("Nao e possivel atribuir um reajuste negativo!\n");
@@ -557,6 +603,7 @@ void writeData(tEmp *employees, FILE *file, int nrEmp)
 }
 
 void showMenu(int nrEmp) {
+    system("cls");
     printf("\n\n");
     printf(" Nr de funcionarios atual: %d\n",nrEmp);
     printf(" ____________________________\n");
@@ -581,7 +628,7 @@ int main() {
     tEmp *employeesDB = NULL;
     int choice, nrOfEmployees = 0;
 
-    file = fopen("dados_rh.txt", "r+");
+    file = fopen("dados_rh.txt", "a+");
 
     if (file == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -603,7 +650,7 @@ int main() {
                 }
             } while (employeesDB == NULL);
             
-            getEmployeesData(file,employeesDB,nrOfEmployees);
+            getEmployeesData(file,employeesDB);
         }
         fclose(file);
     }
@@ -615,26 +662,32 @@ int main() {
         switch (choice) {
 
             case 1:
+                system("cls");
                 nrOfEmployees = addEmployee(&employeesDB,nrOfEmployees);
                 break;
 
             case 2:
+                system("cls");
                 displayEmployees(employeesDB,nrOfEmployees);
                 break;
 
             case 3:
+                system("cls");
                 findEmployee(employeesDB, nrOfEmployees);
                 break;
 
             case 4:
+                system("cls");
                 nrOfEmployees = removeEmployee(employeesDB, nrOfEmployees);
                 break;
 
             case 5:
+                system("cls");
                 showEmployee(employeesDB, nrOfEmployees);
                 break;
 
             case 6:
+                system("cls");
                 salaryAdj(employeesDB, nrOfEmployees);
                 break;
 
@@ -652,6 +705,7 @@ int main() {
 
             default:
                 printf("Opcao invalida. Tente novamente.\n");
+                while ( getchar() != '\n' );
                 break;
         }
 
