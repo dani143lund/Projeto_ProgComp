@@ -15,7 +15,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-
+#include <windows.h>
+#include <time.h>
 /*************************************************************
  * Structs definition
  ************************************************************/
@@ -40,6 +41,7 @@ typedef struct Employee {
  ************************************************************/
 int getEmployeesQty(FILE *file);
 void getEmployeesData(FILE *file, tEmp *employees);
+int findHigherID(tEmp *employees, int nrEmp);
 int addEmployee(tEmp **employees, int nrEmp);
 void editPersonalData(tEmp *employee);
 void addPersonalData(tEmp *employee);
@@ -68,7 +70,7 @@ int getEmployeesQty(FILE *file)
             nrEmp = nrEmp + 1;
         }
     }
-    printf("Numero de func: %d\n",nrEmp);
+    system("color F9");
     return nrEmp;
 }
 
@@ -101,55 +103,55 @@ void getEmployeesData(FILE *file, tEmp *employees)
             {
                 case 0:
                     strncpy(currentEmployee->name,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d name||%s||\n",empIdx,currentEmployee->name);
+                    //printf("Emp %d name||%s||\n",empIdx,currentEmployee->name);
                     employeeDataField++;
                     break;
 
                 case 1:
                     currentEmployee->employeeID = (int)atoi(strBuffer);
-                    printf("Emp %d employeeID||%d||\n",empIdx,currentEmployee->employeeID);
+                    //printf("Emp %d employeeID||%d||\n",empIdx,currentEmployee->employeeID);
                     employeeDataField++;
                     break;
 
                 case 2:
                     currentEmployee->salary = (float)atof(strBuffer);
-                    printf("Emp %d salary||%.2f||\n",empIdx,currentEmployee->salary);
+                    //printf("Emp %d salary||%.2f||\n",empIdx,currentEmployee->salary);
                     employeeDataField++;
                     break;
 
                 case 3:
                     strncpy(currentEmployee->role,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d role||%s||\n",empIdx,currentEmployee->role);
+                    //printf("Emp %d role||%s||\n",empIdx,currentEmployee->role);
                     employeeDataField++;
                     break;
 
                 case 4:
                     strncpy(currentEmployee->address.strName,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d address.strName||%s||\n",empIdx,currentEmployee->address.strName);
+                    //printf("Emp %d address.strName||%s||\n",empIdx,currentEmployee->address.strName);
                     employeeDataField++;
                     break;
 
                 case 5:
                     currentEmployee->address.addrNr = (int)atoi(strBuffer);
-                    printf("Emp %d address.addrNr||%d||\n",empIdx,currentEmployee->address.addrNr);
+                    //printf("Emp %d address.addrNr||%d||\n",empIdx,currentEmployee->address.addrNr);
                     employeeDataField++;
                     break;
 
                 case 6:
                     strncpy(currentEmployee->address.addrRegion,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d address.addrRegion||%s||\n",empIdx,currentEmployee->address.addrRegion);
+                    //printf("Emp %d address.addrRegion||%s||\n",empIdx,currentEmployee->address.addrRegion);
                     employeeDataField++;
                     break;
 
                 case 7:
                     strncpy(currentEmployee->address.addrCity,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d address.addrCity||%s||\n",empIdx,currentEmployee->address.addrCity);
+                    //printf("Emp %d address.addrCity||%s||\n",empIdx,currentEmployee->address.addrCity);
                     employeeDataField++;
                     break;
 
                 case 8:
                     strncpy(currentEmployee->address.addrState,strBuffer,sizeof(strBuffer));
-                    printf("Emp %d address.addrState||%s||\n",empIdx,currentEmployee->address.addrState);
+                    //printf("Emp %d address.addrState||%s||\n",empIdx,currentEmployee->address.addrState);
                     employeeDataField = 0;
                     empIdx++;
                     currentEmployee++; // avoid memory overflow
@@ -164,11 +166,31 @@ void getEmployeesData(FILE *file, tEmp *employees)
     }
 }
 
+int findHigherID(tEmp *employees, int nrEmp)
+{
+    int higherID = 0;
+
+    for(int i = 0; i < nrEmp; i++)
+    {
+        if(employees[i].employeeID > higherID)
+        {
+            higherID = employees[i].employeeID;
+        }
+    }
+
+    return higherID;
+}
+
 int addEmployee(tEmp **employees, int nrEmp)
 {
-    int quantity;
+    int quantity, empID;
     int currentSize = nrEmp;
 
+    printf("******************************************************");
+    printf("\n**                                                  **");
+    printf("\n**             ADICIONAR FUNCIONARIOS               **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************");
     printf("\nDigite a quantidade de funcionarios a cadastrar: ");
     scanf("%d", &quantity);
 
@@ -192,26 +214,53 @@ int addEmployee(tEmp **employees, int nrEmp)
     else 
     {
         system("cls");
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**             ADICIONAR FUNCIONARIOS               **");
+        printf("\n**                                                  **");
+
+        empID = findHigherID(*employees, nrEmp) + 1;
+
         for (int i = currentSize; i < currentSize + quantity; i++) 
         {
-            printf("%d < %d\n", currentSize, currentSize + quantity);
+            //printf("%d < %d\n", currentSize, currentSize + quantity);
+            (*employees)[i].employeeID = empID;
             addPersonalData(&(*employees)[i]);
             addAddressData(&(*employees)[i]);
+
+            empID++;
         }
 
-        printf("%d funcionario(s) adicionado(s) com sucesso!\n\n", quantity);
+        printf("\n%d funcionario(s) adicionado(s) com sucesso!\n\n", quantity);
         system("pause");
+        while(getchar() != '\n');
         return nrEmp;
     }
 }
 
 void editPersonalData(tEmp *employee)
 {
-    printf("\n---------- Dados Pessoais ----------\n");
+    int dataCheck;
 
-    printf("Salario do funcionario: ");
-    scanf("%f", &employee->salary);
+    printf("******************************************************");
+    printf("\n**                                                  **");
+    printf("\n**               EDITAR FUNCIONARIO                 **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************\n");
+    printf("**                 Dados Pessoais                   **");
+    printf("\n******************************************************\n\n");
 
+    do
+    {
+        printf("Salario do funcionario: ");
+        dataCheck = scanf("%f", &employee->salary);
+        if(dataCheck != 1)
+        {
+            printf("O formato dos dados inseridos esta incorreto!\n\n");
+            while ( getchar() != '\n' );
+        }
+    } while (dataCheck != 1);
+    
     printf("Cargo do funcionario: ");
     scanf(" %49[^\n]", employee->role);    
 }
@@ -220,21 +269,11 @@ void addPersonalData(tEmp *employee)
 {
     int dataCheck = 0;
 
-    printf("\n---------- Dados Pessoais ----------\n");
-
-    printf("Nome do funcionario: ");
+    printf("\n******************************************************\n");
+    printf("**                 Dados Pessoais                   **");
+    printf("\n******************************************************\n");
+    printf("\nNome do funcionario: ");
     scanf(" %49[^\n]", employee->name);
-
-    do
-    {
-        printf("ID do funcionario: ");
-        dataCheck = scanf("%d", &employee->employeeID);
-        if(dataCheck != 1)
-        {
-            printf("O formato dos dados inseridos esta incorreto!\n\n");
-            while ( getchar() != '\n' );
-        }
-    } while (dataCheck != 1);
     
     do
     {
@@ -255,9 +294,10 @@ void addAddressData(tEmp *employee)
 {
     int dataCheck = 0;
 
-    printf("\n---------- Endereco ----------\n");
-
-    printf("Rua: ");
+    printf("\n******************************************************\n");
+    printf("**                    Endereco                      **");
+    printf("\n******************************************************\n");
+    printf("\nRua: ");
     scanf(" %49[^\n]", employee->address.strName);
 
     do
@@ -283,9 +323,9 @@ void addAddressData(tEmp *employee)
 
 void logEmployeeData(tEmp *employee, FILE *file)
 {
-    printf("%s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", employee->name, employee->employeeID, employee->salary,
-                                                        employee->role, employee->address.strName, employee->address.addrNr,
-                                                        employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
+    //printf("%s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", employee->name, employee->employeeID, employee->salary,
+                                                        //employee->role, employee->address.strName, employee->address.addrNr,
+                                                        //employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
     fprintf(file, "%s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", employee->name, employee->employeeID, employee->salary,
                                                         employee->role, employee->address.strName, employee->address.addrNr,
                                                         employee->address.addrRegion, employee->address.addrCity, employee->address.addrState);
@@ -298,80 +338,106 @@ void displayEmployees(tEmp *employees, int nrEmp)
 
     tEmp bufEmployee;
 
-    do
+    if(nrEmp < 1)
     {
-        printf("\nSelecione qual o modo de listagem desejado: \n\n");
-        printf("1 - Listar por ID \n");
-        printf("2 - Listar por salario \n");
-        printf("3 - Listar por ordem alfabetica \n\n");
-        printf("Modo: ");
-        scanf("%d",&userChoice);
-
-        if((userChoice != 1) && (userChoice != 2) && (userChoice != 3))
-        {
-            printf("Opcao invalida! Tente novamente! \n\n");
-        }
-    } while ((userChoice != 1) && (userChoice != 2) && (userChoice != 3));
-
-    switch(userChoice)
-    {
-        case 1:
-            for(i = nrEmp - 1; i > 0; i--)
-            {
-                for(j = 0; j < i; j++)
-                {
-                    if(employees[j].employeeID > employees[j+1].employeeID)
-                    {
-                        bufEmployee = employees[j];
-                        employees[j] = employees[j+1];
-                        employees[j+1] = bufEmployee;
-
-                    }
-                }
-            }
-            break;
-
-        case 2:
-            for(i = nrEmp - 1; i > 0; i--)
-            {
-                for(j = 0; j < i; j++)
-                {
-                    if(employees[j].salary > employees[j+1].salary)
-                    {
-                        bufEmployee = employees[j];
-                        employees[j] = employees[j+1];
-                        employees[j+1] = bufEmployee;
-
-                    }
-                }
-            }
-            break;
-
-        case 3:
-            for(i = nrEmp - 1; i > 0; i--)
-            {
-                for(j = 0; j < i; j++)
-                {
-                    if(employees[j].name[0] > employees[j+1].name[0])
-                    {
-                        bufEmployee = employees[j];
-                        employees[j] = employees[j+1];
-                        employees[j+1] = bufEmployee;
-
-                    }
-                }
-            }
-            break;
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**               LISTAR FUNCIONARIOS                **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************\n");
+        printf("\nNao ha funcionarios a serem listados!\n");
     }
-
-    system("cls");
-    printf("\n---------- Listagem: ----------\n");
-
-    for(int empCntr = 0; empCntr < nrEmp; empCntr++)
+    else
     {
-        printf("%d - %s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", empCntr + 1, employees[empCntr].name, employees[empCntr].employeeID, employees[empCntr].salary,
-                                                      employees[empCntr].role, employees[empCntr].address.strName, employees[empCntr].address.addrNr,
-                                                      employees[empCntr].address.addrRegion, employees[empCntr].address.addrCity, employees[empCntr].address.addrState);
+        do
+        {
+            printf("******************************************************");
+            printf("\n**                                                  **");
+            printf("\n**               LISTAR FUNCIONARIOS                **");
+            printf("\n**                                                  **");
+            printf("\n******************************************************");
+            printf("\n**  Selecione qual o modo de listagem desejado:     **");
+            printf("\n******************************************************\n");
+            printf("\n1 - Listar por ID \n");
+            printf("2 - Listar por salario \n");
+            printf("3 - Listar por ordem alfabetica \n\n");
+            printf("Modo: ");
+            scanf("%d",&userChoice);
+
+            if((userChoice != 1) && (userChoice != 2) && (userChoice != 3))
+            {
+                printf("Opcao invalida! Tente novamente! \n\n");
+                system("pause");
+                system("cls");
+            }
+        } while ((userChoice != 1) && (userChoice != 2) && (userChoice != 3));
+
+        switch(userChoice)
+        {
+            case 1:
+                for(i = nrEmp - 1; i > 0; i--)
+                {
+                    for(j = 0; j < i; j++)
+                    {
+                        if(employees[j].employeeID > employees[j+1].employeeID)
+                        {
+                            bufEmployee = employees[j];
+                            employees[j] = employees[j+1];
+                            employees[j+1] = bufEmployee;
+
+                        }
+                    }
+                }
+                break;
+
+            case 2:
+                for(i = nrEmp - 1; i > 0; i--)
+                {
+                    for(j = 0; j < i; j++)
+                    {
+                        if(employees[j].salary > employees[j+1].salary)
+                        {
+                            bufEmployee = employees[j];
+                            employees[j] = employees[j+1];
+                            employees[j+1] = bufEmployee;
+
+                        }
+                    }
+                }
+                break;
+
+            case 3:
+                for(i = nrEmp - 1; i > 0; i--)
+                {
+                    for(j = 0; j < i; j++)
+                    {
+                        if(employees[j].name[0] > employees[j+1].name[0])
+                        {
+                            bufEmployee = employees[j];
+                            employees[j] = employees[j+1];
+                            employees[j+1] = bufEmployee;
+
+                        }
+                    }
+                }
+                break;
+        }
+
+        system("cls");
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**               LISTAR FUNCIONARIOS                **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************");
+        printf("\n**                   Listagem                       **");
+        printf("\n******************************************************\n\n");
+
+        for(int empCntr = 0; empCntr < nrEmp; empCntr++)
+        {
+            printf("%d - %s,%d,%.2f,%s,%s,%d,%s,%s,%s\n", empCntr + 1, employees[empCntr].name, employees[empCntr].employeeID, employees[empCntr].salary,
+                                                        employees[empCntr].role, employees[empCntr].address.strName, employees[empCntr].address.addrNr,
+                                                        employees[empCntr].address.addrRegion, employees[empCntr].address.addrCity, employees[empCntr].address.addrState);
+        }
     }
 
     printf("\n");
@@ -384,7 +450,12 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
     int empId;
     bool isEmployeeFound = false;
 
-    printf("\nInsira o ID do funcionario a ser editado: ");
+    printf("******************************************************");
+    printf("\n**                                                  **");
+    printf("\n**               EDITAR FUNCIONARIO                 **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************");
+    printf("\n\nInsira o ID do funcionario a ser editado: ");
     scanf("%d",&empId);
 
     tEmp *currentEmployee = employee;
@@ -406,7 +477,15 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
     }
     else
     {
-        printf("Funcionario editado com sucesso!\n\n");
+        system("cls");
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**               EDITAR FUNCIONARIO                 **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************\n");
+        printf("**            Rotina de edicao executada!           **");
+        printf("\n******************************************************\n\n");
+        while ( getchar() != '\n' );
     }
     system("pause");
 }
@@ -414,21 +493,31 @@ void findEmployee(tEmp *employee, int nrEmployees) // Finds an employee through 
 void editEmployee(tEmp *employee)
 {
     char userChoice;
-
-    printf("Usuario selecionado: %s, %s\n",employee->name, employee->role);
+    system("cls");
 
     do
     {
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**               EDITAR FUNCIONARIO                 **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************\n");
+        printf(" Usuario selecionado: %s, %s",employee->name, employee->role);
+        printf("\n******************************************************\n\n");
         printf("Deseja editar o cargo ou salario? (s/n): ");
         scanf(" %c",&userChoice);
-
+        
         if((userChoice == 's') || (userChoice == 'S'))
         {
+            system("cls");
             editPersonalData(employee);
         }
         else if((userChoice != 'n') && (userChoice != 'N'))
         {
-            printf("Opcao Invalida! Tente novamente.\n\n");
+            printf("\nOpcao Invalida! Tente novamente.\n\n");
+            system("pause");
+            system("cls");
+            while(getchar() != '\n');
         }
 
     } while (userChoice != 's' && userChoice != 'S' &&
@@ -436,18 +525,33 @@ void editEmployee(tEmp *employee)
 
     do
     {
-        printf("Deseja editar o endereco? (s/n): ");
+        system("cls");
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**               EDITAR FUNCIONARIO                 **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************\n");
+        printf(" Usuario selecionado: %s, %s",employee->name, employee->role);
+        printf("\n******************************************************\n");
+        printf("\nDeseja editar o endereco? (s/n): ");
         scanf(" %c",&userChoice);
 
         if((userChoice == 's') || (userChoice == 'S'))
         {
+            system("cls");
+            printf("******************************************************");
+            printf("\n**                                                  **");
+            printf("\n**               EDITAR FUNCIONARIO                 **");
+            printf("\n**                                                  **");
+
             addAddressData(employee);
         }
         else if((userChoice != 'n') && (userChoice != 'N'))
         {
             printf("Opcao Invalida! Tente novamente.\n\n");
+            system("pause");
+            while(getchar() != '\n');
         }
-
     } while (userChoice != 's' && userChoice != 'S' &&
              userChoice != 'n' && userChoice != 'N');
 }
@@ -458,7 +562,12 @@ int removeEmployee(tEmp *employees, int nrEmployees)
     char userChoice;
     bool isEmployeeFound = false, proceedRemoval = false;
 
-    printf("\nInsira o ID do funcionario a ser removido: ");
+    printf("******************************************************");
+    printf("\n**                                                  **");
+    printf("\n**               REMOVER FUNCIONARIO                **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************");
+    printf("\n\nInsira o ID do funcionario a ser removido: ");
     scanf("%d", &empId);
 
     int foundIndex = -1;
@@ -467,7 +576,6 @@ int removeEmployee(tEmp *employees, int nrEmployees)
     {
         if (employees[cntr].employeeID == empId) 
         {
-            printf("Usuario selecionado: %s, %s\n",employees[cntr].name, employees[cntr].role);
             isEmployeeFound = true;
             foundIndex = cntr;
             break; // Não é necessário continuar procurando se já encontrou
@@ -478,6 +586,14 @@ int removeEmployee(tEmp *employees, int nrEmployees)
     {
         do
         {
+            system("cls");
+            printf("******************************************************");
+            printf("\n**                                                  **");
+            printf("\n**               REMOVER FUNCIONARIO                **");
+            printf("\n**                                                  **");
+            printf("\n******************************************************\n");
+            printf("    Usuario selecionado: %s, %s\n",employees[foundIndex].name, employees[foundIndex].role);
+            printf("******************************************************\n\n");
             printf("Deseja mesmo prosseguir com a remocao? (s/n): ");
             scanf(" %c",&userChoice);
 
@@ -488,6 +604,9 @@ int removeEmployee(tEmp *employees, int nrEmployees)
             else if((userChoice != 'n') && (userChoice != 'N'))
             {
                 printf("Opcao Invalida! Tente novamente.\n\n");
+                system("pause");
+                system("cls");
+                while(getchar() != '\n');
             }
 
         } while (userChoice != 's' && userChoice != 'S' &&
@@ -506,15 +625,16 @@ int removeEmployee(tEmp *employees, int nrEmployees)
             // Reduzir o número total de funcionários
             nrEmployees--;
 
-            printf("Funcionario removido com sucesso!\n\n");
+            printf("\nFuncionario removido com sucesso!\n");
         }
     } 
     else 
     {
-        printf("O ID indicado nao existe!\n\n");
+        printf("O ID indicado nao existe!\n");
         while ( getchar() != '\n' );
     }
 
+    printf("\n");
     system("pause");
     return nrEmployees;
 }
@@ -524,31 +644,51 @@ void showEmployee(tEmp *employee, int nrEmployees) // Shows employee details thr
     int empId;
     bool isEmployeeFound = false;
 
-    printf("\nInsira o ID do funcionario a ser consultado: ");
-    scanf("%d",&empId);
+    printf("******************************************************");
+    printf("\n**                                                  **");
+    printf("\n**              CONSULTAR FUNCIONARIO               **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************\n");
 
-    tEmp *currentEmployee = employee;
-
-    for(int cntr = 0; cntr < nrEmployees; cntr++) // Sweep through the employees data
+    if(nrEmployees < 1)
     {
-        if(currentEmployee->employeeID == empId) // Employee found
-        {
-            isEmployeeFound = true;
-            printf("\nDados do funcionario ID %d: ",empId);
-            printf("\nNome: %s",currentEmployee->name);
-            printf("\nSalario: %.2f",currentEmployee->salary);
-            printf("\nCargo: %s",currentEmployee->role);
-            printf("\nEndereco: %s, %d, %s, %s, %s.\n\n",currentEmployee->address.strName, currentEmployee->address.addrNr,
-                                                    currentEmployee->address.addrRegion, currentEmployee->address.addrCity, currentEmployee->address.addrState);
-            break;
-        }
-        currentEmployee++;
+        printf("\nNao ha funcionarios a serem consultados!\n\n");
     }
-
-    if(!isEmployeeFound)
+    else
     {
-        printf("O ID indicado nao existe!\n\n");
-        while ( getchar() != '\n' );
+        printf("\nInsira o ID do funcionario a ser consultado: ");
+        scanf("%d",&empId);
+
+        tEmp *currentEmployee = employee;
+
+        for(int cntr = 0; cntr < nrEmployees; cntr++) // Sweep through the employees data
+        {
+            if(currentEmployee->employeeID == empId) // Employee found
+            {
+                isEmployeeFound = true;
+                system("cls");
+                printf("******************************************************");
+                printf("\n**                                                  **");
+                printf("\n**              CONSULTAR FUNCIONARIO               **");
+                printf("\n**                                                  **");
+                printf("\n******************************************************\n");
+                printf("**             Dados do funcionario ID %d           **",empId);
+                printf("\n******************************************************\n");
+                printf("\nNome: %s",currentEmployee->name);
+                printf("\nSalario: %.2f",currentEmployee->salary);
+                printf("\nCargo: %s",currentEmployee->role);
+                printf("\nEndereco: %s, %d, %s, %s, %s.\n\n",currentEmployee->address.strName, currentEmployee->address.addrNr,
+                                                        currentEmployee->address.addrRegion, currentEmployee->address.addrCity, currentEmployee->address.addrState);
+                break;
+            }
+            currentEmployee++;
+        }
+
+        if(!isEmployeeFound)
+        {
+            printf("O ID indicado nao existe!\n\n");
+            while ( getchar() != '\n' );
+        }
     }
 
     system("pause");
@@ -559,65 +699,98 @@ void salaryAdj(tEmp* employee, int nrEmployees)
     float percent;
     int dataCheck;
 
-    printf("\nPlataforma de reajuste salarial anual:");
-    do
+    if(nrEmployees < 1)
+    {
+        printf("******************************************************");
+        printf("\n**                                                  **");
+        printf("\n**                REAJUSTAR SALARIOS                **");
+        printf("\n**                                                  **");
+        printf("\n******************************************************\n");
+        printf("\nNao ha funcionarios a serem reajustados!\n\n");
+    }
+    else
     {
         do
         {
-            printf("\nDigite o percentual de reajuste salarial (Max 20 %c): ",'%');
-            dataCheck = scanf("%f",&percent);
+            do
+            {   
+                printf("******************************************************");
+                printf("\n**                                                  **");
+                printf("\n**                REAJUSTAR SALARIOS                **");
+                printf("\n**                                                  **");
+                printf("\n******************************************************\n");
+                printf("\nDigite o percentual de reajuste salarial (Max 20 %c): ",'%');
+                dataCheck = scanf("%f",&percent);
 
-            if(dataCheck != 1)
+                if(dataCheck != 1)
+                {
+                    printf("\nO formato dos dados inseridos esta incorreto!\n\n");
+                    system("pause");
+                    system("cls");
+                    while ( getchar() != '\n' );
+                }
+
+            } while (dataCheck != 1);
+            
+            if(percent < 0)
             {
-                printf("O formato dos dados inseridos esta incorreto!\n");
-                while ( getchar() != '\n' );
+                printf("\nNao e possivel atribuir um reajuste negativo!\n\n");
+                system("pause");
+                system("cls");
             }
-        } while (dataCheck != 1);
-        
-        if(percent < 0)
-        {
-            printf("Nao e possivel atribuir um reajuste negativo!\n");
-        }
-        else if(percent > 20)
-        {
-            printf("O reajuste inserido e maior do que o permitido!\n");
-        }
-    } while ((percent < 0) || (percent > 20));
+            else if(percent > 20)
+            {
+                printf("\nO reajuste inserido e maior do que o permitido!\n\n");
+                system("pause");
+                system("cls");
+            }
+        } while ((percent < 0) || (percent > 20));
 
-    for(int cntr = 0; cntr < nrEmployees; cntr++)
-    {
-        employee[cntr].salary = employee[cntr].salary * (1.0 + (percent / 100.0));
+        for(int cntr = 0; cntr < nrEmployees; cntr++)
+        {
+            employee[cntr].salary = employee[cntr].salary * (1.0 + (percent / 100.0));
+        }
+
+        printf("\nSalarios reajustados com sucesso!\n\n");
     }
-
-    printf("\nSalarios reajustados com sucesso!\n\n");
     system("pause");
 }
 
 void writeData(tEmp *employees, FILE *file, int nrEmp)
 {
     for(int i = 0; i < nrEmp; i++) {
-        printf("i = %d",i);
         logEmployeeData(employees, file);
         employees++;
     }
 }
 
 void showMenu(int nrEmp) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+
     system("cls");
     printf("\n\n");
-    printf(" Nr de funcionarios atual: %d\n",nrEmp);
-    printf(" ____________________________\n");
-    printf("|           Menu             |\n");
-    printf("|____________________________|\n");
-    printf("| 1. Adicionar Funcionario   |\n");
-    printf("| 2. Listar cadastros        |\n");
-    printf("| 3. Editar Cadastro         |\n");
-    printf("| 4. Remover Cadastro        |\n");
-    printf("| 5. Consultar funcionario   |\n");
-    printf("| 6. Reajuste coletivo       |\n");
-    printf("| 7. Sair                    |\n");
-    printf("|____________________________|\n");
-    printf("Escolha uma opcao: ");
+    printf("******************************************************\n");
+    printf("**     DATA: %02d/%02d/%d             HORA: %02d:%02d     **", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900, tm.tm_hour, tm.tm_min);
+    printf("\n**                                                  **");
+    printf("\n**     SISTEMA DE GERENCIAMENTO DE FUNCIONARIOS     **");
+    printf("\n**                                                  **");
+    printf("\n******************************************************\n");
+    printf("**         Numero de funcionarios atual: %02d         **",nrEmp);
+    printf("\n******************************************************\n");
+    printf(" ____________________________________________________\n");
+    printf("|                                                    |\n");
+    printf("|                 Opcoes do sistema                  |\n");
+    printf("|____________________________________________________|\n");
+    printf("| 1. Adicionar Funcionario                           |\n");
+    printf("| 2. Listar cadastros                                |\n");
+    printf("| 3. Editar Cadastro                                 |\n");
+    printf("| 4. Remover Cadastro                                |\n");
+    printf("| 5. Consultar funcionario                           |\n");
+    printf("| 6. Reajuste coletivo                               |\n");
+    printf("| 7. Sair                                            |\n");
+    printf("|____________________________________________________|\n");                     
+    printf(" Escolha uma opcao: ");
 }
 
 /*************************************************************
@@ -658,7 +831,7 @@ int main() {
     do {
         showMenu(nrOfEmployees);
         scanf("%d", &choice);
-
+        while(getchar() != '\n');
         switch (choice) {
 
             case 1:
@@ -699,7 +872,8 @@ int main() {
                     fclose(file);
                 }
 
-                printf("Programa encerrado.\n");
+                printf("\nSaindo...\n");
+                sleep(2);
                 free(employeesDB);
                 break;
 

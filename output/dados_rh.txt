@@ -35,5 +35,5 @@ Rodrigo Oliveira,34,9800.00,Analista de Sistemas,Avenida da Tecnologia,765,Cidad
 Amanda Costa,35,8800.00,Suporte Tecnico,Rua da Inovacao,432,Tingui,Curitiba,PR
 Laura Martins,36,8700.00,Analista de Comunicacao,Avenida da Criatividade,987,Abranches,Curitiba,PR
 Mauricio Santos,37,9200.00,Desenvolvedor Full-stack,Rua da Programacao,654,Boqueirao,Curitiba,PR
-Anderson Silva,39,5000.00,Analista Jr,Rua Jose Ferreira,455,Sitio Cercado,Curitiba,PR
-Jose Silva,40,3000.00,Tecnico da Manutencao,Rua das Oncas,688,Tiete,Araucaria,PR
+Anderson Silva,38,5000.00,Analista Jr,Rua Jose Ferreira,455,Sitio Cercado,Curitiba,PR
+Jose Silva,39,3000.00,Tecnico da Manutencao,Rua das Oncas,688,Tiete,Araucaria,PR
