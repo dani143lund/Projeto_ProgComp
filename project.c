@@ -319,6 +319,7 @@ void addAddressData(tEmp *employee)
 
     printf("Estado: ");
     scanf(" %2[^\n]", employee->address.addrState);
+    while ( getchar() != '\n' );
 }
 
 void logEmployeeData(tEmp *employee, FILE *file)
